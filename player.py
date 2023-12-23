@@ -14,17 +14,16 @@ def get_random_job() -> str:
     # Choose a random line using the assigned weights
     random_line = choices(jobs, weights=weights, k=1)[0]
 
-    return (
-        random_line.split(",")[0]
-        .replace(", All Other", "")
-        .strip()
-        .rstrip("s")
-    )
+    return random_line.split(",")[0].replace(", All Other", "").strip().rstrip("s")
 
 
 def generate_age() -> int:
-    """Returns an age between 18 and 65"""
-    return randint(18, 65)
+    """
+    Returns an age between 18 and 65, with it more likely to return a younger number.
+    """
+    ages = range(18, 66)
+    weights = [1 / x for x in ages]
+    return choices(ages, weights=weights, k=1)[0]
 
 
 @dataclass

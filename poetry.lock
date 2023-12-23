@@ -83,6 +83,16 @@ files = [
 ]
 
 [[package]]
+name = "names"
+version = "0.3.0"
+description = "Generate random names"
+optional = false
+python-versions = "*"
+files = [
+    {file = "names-0.3.0.tar.gz", hash = "sha256:726e46254f2ed03f1ffb5d941dae3bc67c35123941c29becd02d48d0caa2a671"},
+]
+
+[[package]]
 name = "packaging"
 version = "23.2"
 description = "Core utilities for Python packages"
@@ -144,4 +154,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b43ae97dfe89e809cffab77f4c3a0676061170fba91b0e01f8cc8fbf6d226b25"
+content-hash = "5be0ac231869818b3c70b4a508eee40a914cc83d7a61cd29bc5af46aa6713e43"

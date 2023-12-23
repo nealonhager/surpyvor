@@ -1,7 +1,7 @@
 from players import Player, host
 from random import randint, shuffle
 from tribe import Tribe
-from challenges import GroupChallenge
+from challenges import GroupChallenge, IndividualChallenge
 from tribal_council import TribalCouncil
 from utils import dialog
 
@@ -132,11 +132,22 @@ if __name__ == "__main__":
     # Merge Feast
 
     # Loop
-    #   Individual challenge
-    #   tribal council
-    #   losers at tribal council get added to the jury
-    #   when there are 3 players left, exit loop
+    players = []
+    for tribe in tribes:
+        players.extend(tribe.players)
+    while True:
+        #   Individual challenge
+        winners, losers = IndividualChallenge(players).play(num_winners=1)
+        #   tribal council
+        players = TribalCouncil(losers).simulate()
+        players.extend(winners)
+        #   losers at tribal council get added to the jury
+        #   when there are 3 players left, exit loop
+        if len(players) <= 3:
+            break
 
+    for player in players:
+        print(player.get_full_name())
     # jury votes on who wins
 
     ...

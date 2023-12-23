@@ -2,7 +2,7 @@ from players import Player, host
 from random import randint, shuffle
 from tribe import Tribe
 from challenges import GroupChallenge, IndividualChallenge
-from tribal_council import TribalCouncil
+from tribal_council import TribalCouncil, FinalTribalCouncil
 from utils import dialog
 
 
@@ -152,12 +152,7 @@ if __name__ == "__main__":
         if len(players) <= 3:
             break
 
-    for player in players:
-        print(
-            player.get_full_name(),
-            player.immunity_challenges_won,
-            [vote.get_full_name() for vote in player.votes],
-        )
     # jury votes on who wins
+    winner = FinalTribalCouncil(players).simulate()
 
     ...

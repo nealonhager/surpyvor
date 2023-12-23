@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from random import random, randint
+from random import random, randint, choices
 import names
 
 
@@ -8,9 +8,14 @@ def get_random_job() -> str:
     with open("jobs.txt") as file:
         jobs = file.readlines()
 
+    # Assign weights to each line based on their position in the file
+    weights = [1 / (i + 1) for i in range(len(jobs))]
+
+    # Choose a random line using the assigned weights
+    random_line = choices(jobs, weights=weights, k=1)[0]
+
     return (
-        jobs[randint(0, len(jobs) - 1)]
-        .split(",")[0]
+        random_line.split(",")[0]
         .replace(", All Other", "")
         .strip()
         .rstrip("s")
@@ -51,3 +56,6 @@ class Player:
     creativity: float = field(default_factory=random)
     fortitude: float = field(default_factory=random)
     pride: float = field(default_factory=random)
+
+    def get_full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"

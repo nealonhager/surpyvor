@@ -1,5 +1,10 @@
 from player import Player
 from random import randint
+from tribe import Tribe
+
+
+def dialog(player: Player, text: str):
+    print(f"{player.get_full_name()}\n\t{text}")
 
 
 if __name__ == "__main__":
@@ -30,18 +35,20 @@ if __name__ == "__main__":
         "Teal",
     ]
     tribe_colors = [colors.pop(randint(0, len(colors) - 1)) for _ in range(num_tribes)]
-    print(num_tribes, "tribes:", tribe_colors)
+    tribes = [Tribe(tribe_colors[i], []) for i in range(num_tribes)]
     for i, player in enumerate(players):
-        player.tribe = tribe_colors[i % num_tribes]
+        player.tribe = tribes[i % num_tribes]
+        player.tribe.add_player(player)
 
-    # Show Players
-    for player in players:
-        print(
-            player.get_full_name(),
-            player.age,
-            player.profession,
-            f"{player.tribe} Tribe",
-            sep=", ",
-        )
+    dialog(
+        host,
+        "Welcome to Surpyvor, 18 Americans from different walks of life will be competing to be the sole Surpyvor, and a million dollars.",
+    )
+
+    for tribe in tribes:
+        x = f"On the {tribe.color} tribe, we have "
+        for player in tribe.players:
+            x += f"{player.get_full_name()}, a {player.age} year old {player.profession}. "
+        dialog(host, x)
 
     ...

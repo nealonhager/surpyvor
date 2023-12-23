@@ -21,7 +21,7 @@ def generate_age() -> int:
     """
     Returns an age between 18 and 65, with it more likely to return a younger number.
     """
-    ages = range(18, 66)
+    ages = range(18, 60)
     weights = [1 / x for x in ages]
     return choices(ages, weights=weights, k=1)[0]
 

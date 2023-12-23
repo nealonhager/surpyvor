@@ -138,6 +138,12 @@ if __name__ == "__main__":
     while True:
         #   Individual challenge
         winners, losers = IndividualChallenge(players).play(num_winners=1)
+        for winner in winners:
+            dialog(
+                host,
+                f"Congrats, {winner.get_full_name()} you are safe in tonight's tribal council.",
+            )
+            winner.immunity_challenges_won += 1
         #   tribal council
         players = TribalCouncil(losers).simulate()
         players.extend(winners)
@@ -147,7 +153,11 @@ if __name__ == "__main__":
             break
 
     for player in players:
-        print(player.get_full_name())
+        print(
+            player.get_full_name(),
+            player.immunity_challenges_won,
+            [vote.get_full_name() for vote in player.votes],
+        )
     # jury votes on who wins
 
     ...

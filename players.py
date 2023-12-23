@@ -38,6 +38,7 @@ class Player:
     profession: str = field(default_factory=get_random_job)
     advantages: list = field(default_factory=list)
     relationships: list = field(default_factory=list)
+    votes: list = field(default_factory=list)
     times_voted_on: int = 0
     immunity_challenges_won: int = 0
     reward_challenges_won: int = 0
@@ -64,6 +65,7 @@ class Player:
 
     def vote(self, players: List["Player"]) -> "Player":
         random_player = choice(players)
+        self.votes.append(random_player)
         return random_player
 
 

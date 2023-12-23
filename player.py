@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from random import random, randint, choices
+from random import random, choices
 import names
 
 

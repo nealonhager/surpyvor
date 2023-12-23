@@ -1,10 +1,9 @@
 from player import Player
 from random import randint
 from tribe import Tribe
-
-
-def dialog(player: Player, text: str):
-    print(f"{player.get_full_name()}\n\t{text}")
+from challenges import GroupChallenge
+from tribal_council import TribalCouncil
+from utils import dialog
 
 
 if __name__ == "__main__":
@@ -50,5 +49,15 @@ if __name__ == "__main__":
         for player in tribe.players:
             x += f"{player.get_full_name()}, a {player.age} year old {player.profession}. "
         dialog(host, x)
+
+    dialog(host, "Let's get right into the first challenge.")
+
+    winning_tribe, losing_tribe = GroupChallenge(tribes).play()
+    dialog(host, f"{winning_tribe.color} tribe wins it, and is safe from elimination!")
+    dialog(
+        host,
+        f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
+    )
+    losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
 
     ...

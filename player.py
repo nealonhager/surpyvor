@@ -1,10 +1,13 @@
 from dataclasses import dataclass, field
-from random import random, choices
+from random import random, choices, choice
 import names
+from typing import List
 
 
 def get_random_job() -> str:
-    """Opens the jobs.txt file and grabs a random job from the list."""
+    """
+    Opens the jobs.txt file and grabs a random job from the list.
+    """
     with open("jobs.txt") as file:
         jobs = file.readlines()
 
@@ -58,3 +61,7 @@ class Player:
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    def vote(self, players: List["Player"]) -> "Player":
+        random_player = choice(players)
+        return random_player

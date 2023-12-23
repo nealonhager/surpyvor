@@ -7,12 +7,20 @@ def get_random_job() -> str:
     """Opens the jobs.txt file and grabs a random job from the list."""
     with open("jobs.txt") as file:
         jobs = file.readlines()
-    return jobs[randint(0, len(jobs) - 1)].strip()
+
+    return (
+        jobs[randint(0, len(jobs) - 1)]
+        .split(",")[0]
+        .replace(", All Other", "")
+        .strip()
+        .rstrip("s")
+    )
 
 
 def generate_age() -> int:
     """Returns an age between 18 and 65"""
     return randint(18, 65)
+
 
 @dataclass
 class Player:

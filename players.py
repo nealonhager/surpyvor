@@ -61,6 +61,8 @@ class Player:
     creativity: float = field(default_factory=random)
     fortitude: float = field(default_factory=random)
     pride: float = field(default_factory=random)
+    balance: float = field(default_factory=random)
+    speed: float = field(default_factory=random)
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
@@ -89,6 +91,8 @@ class Player:
             "creativity": self.creativity,
             "fortitude": self.fortitude,
             "pride": self.pride,
+            "balance": self.balance,
+            "speed": self.speed,
         }
 
     def calculate_attributes_product(self) -> float:
@@ -115,6 +119,8 @@ class Player:
             "creativity",
             "fortitude",
             "pride",
+            "balance",
+            "speed",
         ]
 
 

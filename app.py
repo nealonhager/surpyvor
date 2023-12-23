@@ -4,6 +4,8 @@ from tribe import Tribe
 from challenges import GroupChallenge, IndividualChallenge
 from tribal_council import TribalCouncil, FinalTribalCouncil
 from utils import dialog
+from dataclasses import asdict
+import json
 
 
 if __name__ == "__main__":
@@ -12,6 +14,11 @@ if __name__ == "__main__":
     # Generate Players
     for _ in range(18):
         players.append(Player())
+
+    # Write player info to a file
+    with open("player_info.txt", "w") as file:
+        for player in players:
+            file.write(json.dumps(asdict(player)) + "\n")
 
     # Generate Tribes
     num_tribes = randint(2, 3)
@@ -137,9 +144,7 @@ if __name__ == "__main__":
         players.extend(tribe.players)
     while True:
         #   Individual challenge
-        winners, losers = IndividualChallenge(
-            players, Player.get_attribute_names()
-        ).play(num_winners=1)
+        winners, losers = IndividualChallenge(players).play(num_winners=1)
         for winner in winners:
             dialog(
                 host,

@@ -145,12 +145,6 @@ if __name__ == "__main__":
     while True:
         #   Individual challenge
         winners, losers = IndividualChallenge(players).play(num_winners=1)
-        for winner in winners:
-            dialog(
-                host,
-                f"Congrats, {winner.get_full_name()} you are safe in tonight's tribal council.",
-            )
-            winner.immunity_challenges_won += 1
         #   tribal council
         players = TribalCouncil(losers).simulate()
         players.extend(winners)

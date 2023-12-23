@@ -1,8 +1,10 @@
 from typing import Tuple, Optional, List
 from tribe import Tribe
-from random import randint, choice
+from random import randint
 from players import Player
 import math
+from utils import dialog
+from players import host
 
 
 class Challenge:
@@ -65,11 +67,11 @@ class IndividualChallenge:
         """
         Determines the winning player(s), and also return the losers.
         """
+        dialog(host, "Come on in guys! Let's get right into this individual challenge.")
         winners = []
         challenge = Challenge()
         challenge.add_puzzle()
         challenge.add_balancing_section()
-        x = list(zip(challenge.attributes, challenge.weights))
 
         for player in self.players:
             players_attributes = [
@@ -86,6 +88,13 @@ class IndividualChallenge:
                 enumerate(self.attribute_products), key=lambda x: x[1]
             )[0]
             winner = self.players.pop(best_player_idx)
+            print(f"{winner.get_full_name()} won the individual challenge.".upper())
+            dialog(
+                host,
+                f"Congrats, {winner.get_full_name()} you are safe in tonight's tribal council. How does it feel?",
+            )
+            dialog(winner, winner.get_challenge_win_speech())
             winners.append(winner)
+            winner.immunity_challenges_won += 1
 
         return winners, self.players

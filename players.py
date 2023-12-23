@@ -102,6 +102,31 @@ class Player:
 
         return math.prod(list(self.get_attributes().values()))
 
+    def get_challenge_win_speech(self) -> str:
+        options = [
+            "Like I just got a get-out-of-jail-free card in Monopoly!",
+            "Feels like Christmas came early this year, Jeff!",
+            "I'm on cloud nine and it's a great view!",
+            "Better than my morning coffee, and that's saying something!",
+            "Like I've just aced a test I didn't study for!",
+            "As if I've found an oasis in a desert!",
+            "Imagine winning the lottery, but for your life!",
+            "It's like a weight's been lifted off my shoulders.",
+            "I'm more relieved than a kid on summer vacation!",
+            "It's the Survivor equivalent of a victory lap!",
+            "Like a gladiator who just won the coliseum fight!",
+            "It's a mix of shock, joy, and pure adrenaline!",
+            "I'm buzzing more than a bee on honey!",
+            "Feels like I've dodged a bullet, literally!",
+            "I'm the cat that got the cream, Jeff.",
+            "It's like finding the last piece of a puzzle!",
+            "Better than any high school prom night!",
+            "I feel like I've just been reborn in this game!",
+            "It's a surreal moment, like walking on air!",
+            "Like I've just been given a second chance at life!",
+        ]
+        return choice(options)
+
     @staticmethod
     def get_attribute_names() -> List[str]:
         return [

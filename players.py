@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from random import random, choices, choice
 import names
 from typing import List
+import math
 
 
 def get_random_job() -> str:
@@ -45,6 +46,7 @@ class Player:
     votes_to_cast: int = 1
     hunger: float = 0
 
+    # Attributes
     agreeability: float = field(default_factory=random)
     boldness: float = field(default_factory=random)
     strength: float = field(default_factory=random)
@@ -67,6 +69,53 @@ class Player:
         random_player = choice(players)
         self.votes.append(random_player)
         return random_player
+
+    def get_attributes(self) -> dict:
+        """
+        Returns a dict of the players attributes.
+        """
+        return {
+            "agreeability": self.agreeability,
+            "boldness": self.boldness,
+            "strength": self.strength,
+            "intelligence": self.intelligence,
+            "emotional_intelligence": self.emotional_intelligence,
+            "endurance": self.endurance,
+            "charisma": self.charisma,
+            "loyalty": self.loyalty,
+            "strategic_ability": self.strategic_ability,
+            "popularity": self.popularity,
+            "survival_skills": self.survival_skills,
+            "creativity": self.creativity,
+            "fortitude": self.fortitude,
+            "pride": self.pride,
+        }
+
+    def calculate_attributes_product(self) -> float:
+        """
+        Returns the product of all the player's attributes.
+        """
+
+        return math.prod(list(self.get_attributes().values()))
+
+    @staticmethod
+    def get_attribute_names() -> List[str]:
+        return [
+            "agreeability",
+            "boldness",
+            "strength",
+            "intelligence",
+            "emotional_intelligence",
+            "endurance",
+            "charisma",
+            "loyalty",
+            "strategic_ability",
+            "popularity",
+            "survival_skills",
+            "creativity",
+            "fortitude",
+            "pride",
+        ]
 
 
 host = Player(tribe="None", first_name="Jeff", last_name="Probst", age=50)

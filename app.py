@@ -137,7 +137,9 @@ if __name__ == "__main__":
         players.extend(tribe.players)
     while True:
         #   Individual challenge
-        winners, losers = IndividualChallenge(players).play(num_winners=1)
+        winners, losers = IndividualChallenge(
+            players, Player.get_attribute_names()
+        ).play(num_winners=1)
         for winner in winners:
             dialog(
                 host,

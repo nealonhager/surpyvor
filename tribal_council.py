@@ -1,6 +1,7 @@
 from typing import List
-from player import Player
+from players import Player, host
 import random
+from utils import dialog
 
 
 class TribalCouncil:
@@ -25,7 +26,7 @@ class TribalCouncil:
         ]
         random_player = random.choice(players_with_max_votes)
 
-        print(f"{random_player}, your tribe has spoken.")
+        dialog(host, f"{random_player}, your tribe has spoken.")
 
         new_players = []
         for player in self.players:

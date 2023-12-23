@@ -1,4 +1,4 @@
-from player import Player
+from players import Player, host
 from random import randint
 from tribe import Tribe
 from challenges import GroupChallenge
@@ -7,7 +7,6 @@ from utils import dialog
 
 
 if __name__ == "__main__":
-    host = Player(tribe="None", first_name="Jeff", last_name="Probst", age=50)
     players = []
 
     # Generate Players
@@ -50,14 +49,39 @@ if __name__ == "__main__":
             x += f"{player.get_full_name()}, a {player.age} year old {player.profession}. "
         dialog(host, x)
 
+    # First Tribal Council
     dialog(host, "Let's get right into the first challenge.")
-
     winning_tribe, losing_tribe = GroupChallenge(tribes).play()
+    tribes = [winning_tribe, losing_tribe, *tribes]
     dialog(host, f"{winning_tribe.color} tribe wins it, and is safe from elimination!")
     dialog(
         host,
         f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
     )
     losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
+
+    while True:
+        dialog(host, "Come on in guys!")
+        winning_tribe, losing_tribe = GroupChallenge(tribes).play()
+        tribes = [winning_tribe, losing_tribe, *tribes]
+        dialog(
+            host, f"{winning_tribe.color} tribe wins it, and is safe from elimination!"
+        )
+        dialog(
+            host,
+            f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
+        )
+        losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
+
+        number_of_players_remaining = sum([len(tribe.players) for tribe in tribes])
+
+        if number_of_players_remaining <= 10:
+            break
+        if len(losing_tribe.players) < 3:
+            break
+
+    # Determine if there is going to be a merge or a tribe swap
+    for tribe in tribes:
+        print(tribe.color, len(tribe.players))
 
     ...

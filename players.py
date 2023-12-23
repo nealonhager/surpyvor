@@ -65,3 +65,6 @@ class Player:
     def vote(self, players: List["Player"]) -> "Player":
         random_player = choice(players)
         return random_player
+
+
+host = Player(tribe="None", first_name="Jeff", last_name="Probst", age=50)

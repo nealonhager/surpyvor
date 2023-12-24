@@ -1,4 +1,9 @@
+import os
 from players import Player
+from tribe import Tribe
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def test_vote():
@@ -14,6 +19,12 @@ def test_descriptor():
     desc = player.generate_descriptors()
     new_desc = player.generate_descriptors()
 
-    print(desc)
     assert desc != ""
     assert desc == new_desc
+
+
+def test_chacter_image_creation():
+    if int(os.environ.get("TEST_WITH_API_KEY")) == 1:
+        player = Player()
+        print(player.descriptor)
+        player.create_profile_image("red")

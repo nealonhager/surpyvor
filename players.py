@@ -3,6 +3,9 @@ from random import random, choices, choice
 import names
 from typing import List
 import math
+import os
+import requests
+from openai import OpenAI
 
 
 def get_random_job() -> str:
@@ -175,6 +178,36 @@ class Player:
             "Like I've just been given a second chance at life!",
         ]
         return choice(options)
+
+    def create_profile_image(self, tribe_color: str) -> str:
+        client = OpenAI()
+        prompt = f"A closeup portrait of a {self.generate_descriptors()} person named {self.get_full_name()}. Standing on the beach in fiji. wearing casual {tribe_color} tinted clothes."
+
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
+        print(prompt)
+        image_url = response.data[0].url
+
+        # Create the "images" folder if it doesn't exist
+        os.makedirs("images", exist_ok=True)
+
+        # Download the image file
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            # Extract the filename from the URL
+            filename = self.get_full_name().replace(" ", "_")
+
+            # Save the image file to the "images" folder
+            with open(f"images/{filename}.png", "wb") as file:
+                file.write(response.content)
+                print(f"Image downloaded and saved as {filename}")
+        else:
+            print("Failed to download the image")
 
     @staticmethod
     def get_attribute_names() -> List[str]:

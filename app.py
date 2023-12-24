@@ -1,6 +1,6 @@
 from players import Player, host
 from random import randint, shuffle
-from tribe import Tribe
+from tribe import Tribe, TribeFactory
 from challenges import GroupChallenge, IndividualChallenge
 from tribal_council import TribalCouncil, FinalTribalCouncil
 from utils import dialog
@@ -22,25 +22,9 @@ if __name__ == "__main__":
 
     # Generate Tribes
     num_tribes = randint(2, 3)
-    colors = [
-        "Red",
-        "Blue",
-        "Yellow",
-        "Green",
-        "Purple",
-        "Orange",
-        "Black",
-        "White",
-        "Pink",
-        "Brown",
-        "Gray",
-        "Tan",
-        "Lime",
-        "Maroon",
-        "Teal",
-    ]
-    tribe_colors = [colors.pop(randint(0, len(colors) - 1)) for _ in range(num_tribes)]
-    tribes = [Tribe(tribe_colors[i], []) for i in range(num_tribes)]
+    tribe_factory = TribeFactory()
+    tribes = [TribeFactory().create_empty_tribe() for _ in range(num_tribes)]
+
     for i, player in enumerate(players):
         player.tribe = tribes[i % num_tribes]
         player.tribe.add_player(player)
@@ -104,10 +88,7 @@ if __name__ == "__main__":
             player.tribe = None
 
         num_tribes = 2
-        tribe_colors = [
-            colors.pop(randint(0, len(colors) - 1)) for _ in range(num_tribes)
-        ]
-        tribes = [Tribe(tribe_colors[i], []) for i in range(num_tribes)]
+        tribes = [TribeFactory().create_empty_tribe() for _ in range(num_tribes)]
         shuffle(players)
         for i, player in enumerate(players):
             player.tribe = tribes[i % num_tribes]
@@ -135,8 +116,6 @@ if __name__ == "__main__":
             if len(losing_tribe.players) < 3:
                 break
         dialog(host, "Drop your buffs, because we're merging.")
-
-    # Merge Feast
 
     # Loop
     players = []

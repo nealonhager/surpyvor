@@ -12,7 +12,7 @@ def test_create_tribe():
 def test_create_many_tribes():
     tf = TribeFactory()
     tribes = []
-    num_tribes_to_create = 15
+    num_tribes_to_create = 10
 
     for _ in range(num_tribes_to_create):
         tribe = tf.create_empty_tribe()
@@ -26,7 +26,7 @@ def test_create_many_tribes():
 def test_create_too_many_tribes():
     tf = TribeFactory()
     tribes = []
-    num_tribes_to_create = 15
+    num_tribes_to_create = 10
 
     for _ in range(num_tribes_to_create):
         tribe = tf.create_empty_tribe()

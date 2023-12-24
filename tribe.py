@@ -27,11 +27,6 @@ class TribeFactory:
             "Black",
             "White",
             "Pink",
-            "Brown",
-            "Gray",
-            "Tan",
-            "Lime",
-            "Maroon",
             "Teal",
         ]
 

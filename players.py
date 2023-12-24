@@ -24,6 +24,18 @@ def get_random_job() -> str:
     return random_line.split(",")[0].replace(", All Other", "").strip().rstrip("s")
 
 
+def generate_race() -> str:
+    return choice(
+        [
+            "white",
+            "asian",
+            "black",
+            "hispanic",
+            "arabic",
+        ]
+    )
+
+
 def generate_age() -> int:
     """
     Returns an age between 18 and 65, with it more likely to return a younger number.
@@ -136,7 +148,9 @@ class Player:
             hair_color = choice(["black", "brown", "blonde", "red"])
             hair_type = choice(["straight", "curly", "wavy"])
             hair_length = choice(["long", "short", "medium"])
-            hair_description = f"{hair_length} {hair_type} {hair_color}"
+            hair_thickness = choice(["thick", "thin"])
+            balding = bool(range(0, 2))
+            hair_description = f"{'balding ' if balding and self.gender == 'male' else ''}{hair_length} {hair_thickness} {hair_type} {hair_color}"
 
             self.descriptor = f"{weight}, {strength}, {hair_description} haired"
 
@@ -176,33 +190,40 @@ class Player:
 
     def create_profile_image(self, tribe_color: str) -> str:
         client = OpenAI()
-        prompt = f"A closeup portrait of a {self.generate_descriptors()} {self.gender}. {self.age} years old. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color} tinted clothes."
+        prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color} clothes."
+        attempts = 3
+        while True:
+            try:
+                response = client.images.generate(
+                    model="dall-e-3",
+                    prompt=prompt,
+                    size="1024x1024",
+                    quality="standard",
+                    n=1,
+                )
+                print(prompt)
+                image_url = response.data[0].url
 
-        response = client.images.generate(
-            model="dall-e-3",
-            prompt=prompt,
-            size="1024x1024",
-            quality="standard",
-            n=1,
-        )
-        print(prompt)
-        image_url = response.data[0].url
+                # Create the "images" folder if it doesn't exist
+                os.makedirs("images", exist_ok=True)
 
-        # Create the "images" folder if it doesn't exist
-        os.makedirs("images", exist_ok=True)
+                # Download the image file
+                response = requests.get(image_url)
 
-        # Download the image file
-        response = requests.get(image_url)
-        if response.status_code == 200:
-            # Extract the filename from the URL
-            filename = self.get_full_name().replace(" ", "_")
+                # Extract the filename from the URL
+                filename = self.get_full_name().replace(" ", "_")
 
-            # Save the image file to the "images" folder
-            with open(f"images/{filename}.png", "wb") as file:
-                file.write(response.content)
-                print(f"Image downloaded and saved as {filename}")
-        else:
-            print("Failed to download the image")
+                # Save the image file to the "images" folder
+                with open(f"images/{filename}.png", "wb") as file:
+                    file.write(response.content)
+                    print(f"Image downloaded and saved as {filename}")
+
+                break
+            except:
+                if attempts == 0:
+                    raise Exception(f"couldn't get an image for {self.get_full_name()}")
+
+                attempts -= 1
 
     @staticmethod
     def get_attribute_names() -> List[str]:

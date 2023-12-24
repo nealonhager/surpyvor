@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Generate Tribes
     num_tribes = randint(2, 3)
     tribe_factory = TribeFactory()
-    tribes = [TribeFactory().create_empty_tribe() for _ in range(num_tribes)]
+    tribes = [tribe_factory.create_empty_tribe() for _ in range(num_tribes)]
 
     for i, player in enumerate(players):
         player.tribe = tribes[i % num_tribes]

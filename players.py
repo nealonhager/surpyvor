@@ -35,8 +35,9 @@ def generate_age() -> int:
 
 @dataclass
 class Player:
-    tribe: str = None
-    first_name: str = field(default_factory=names.get_first_name)
+    tribe = None
+    gender = None
+    first_name = None
     last_name: str = field(default_factory=names.get_last_name)
     age: int = field(default_factory=generate_age)
     profession: str = field(default_factory=get_random_job)
@@ -69,6 +70,10 @@ class Player:
 
     # Descriptor
     descriptor: str = ""
+
+    def __post_init__(self):
+        self.gender = choice(["male", "female"])
+        self.first_name = names.get_first_name(gender=self.gender)
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
@@ -111,16 +116,8 @@ class Player:
 
     def generate_descriptors(self) -> str:
         if self.descriptor == "":
-            beauty = random()
             weight = random()
 
-            beauty = (
-                "pretty"
-                if beauty > 0.66
-                else "not attractive"
-                if beauty < 0.33
-                else "normal looking"
-            )
             weight = (
                 "overweight"
                 if weight > 0.66
@@ -141,9 +138,7 @@ class Player:
             hair_length = choice(["long", "short", "medium"])
             hair_description = f"{hair_length} {hair_type} {hair_color}"
 
-            self.descriptor = (
-                f"{beauty}, {weight}, {strength}, {hair_description} haired"
-            )
+            self.descriptor = f"{weight}, {strength}, {hair_description} haired"
 
         return self.descriptor
 
@@ -181,7 +176,7 @@ class Player:
 
     def create_profile_image(self, tribe_color: str) -> str:
         client = OpenAI()
-        prompt = f"A closeup portrait of a {self.generate_descriptors()} person named {self.get_full_name()}. Standing on the beach in fiji. wearing casual {tribe_color} tinted clothes."
+        prompt = f"A closeup portrait of a {self.generate_descriptors()} {self.gender}. {self.age} years old. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color} tinted clothes."
 
         response = client.images.generate(
             model="dall-e-3",
@@ -231,4 +226,6 @@ class Player:
         ]
 
 
-host = Player(tribe="None", first_name="Jeff", last_name="Probst", age=50)
+host = Player()
+host.first_name = "Jeff"
+host.last_name = "Probst"

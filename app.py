@@ -29,6 +29,13 @@ if __name__ == "__main__":
         player.tribe = tribes[i % num_tribes]
         player.tribe.add_player(player)
 
+    # Generate pictures of contenstants
+    for player in players:
+        try:
+            player.create_profile_image(player.tribe.color)
+        except:
+            print(f"{player.get_full_name()}'s image could not be created.")
+
     dialog(
         host,
         "Welcome to Surpyvor, 18 Americans from different walks of life will be competing to be the sole Surpyvor, and a million dollars.",

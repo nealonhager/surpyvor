@@ -7,7 +7,7 @@ client = OpenAI()
 
 response = client.images.generate(
     model="dall-e-3",
-    prompt="A closeup portrait of an ugly person wearing mostly the color orange casual clothing, on a beach of fiji. mid day.",
+    prompt="A closeup portrait of a pretty, healthy weight, not strong or weak body, medium curly black haired person standing on the beach in fiji. wearing casual green tinted clothes.",
     size="1024x1024",
     quality="standard",
     n=1,

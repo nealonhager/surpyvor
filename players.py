@@ -64,6 +64,9 @@ class Player:
     balance: float = field(default_factory=random)
     speed: float = field(default_factory=random)
 
+    # Descriptor
+    descriptor: str = ""
+
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
@@ -102,6 +105,44 @@ class Player:
             "balance": self.balance,
             "speed": self.speed,
         }
+
+    def generate_descriptors(self) -> str:
+        if self.descriptor == "":
+            beauty = random()
+            weight = random()
+
+            beauty = (
+                "pretty"
+                if beauty > 0.66
+                else "not attractive"
+                if beauty < 0.33
+                else "normal looking"
+            )
+            weight = (
+                "overweight"
+                if weight > 0.66
+                else "underweight"
+                if weight < 0.33
+                else "healthy weight"
+            )
+            strength = (
+                "strong body"
+                if self.strength > 0.66
+                else "weak body"
+                if self.strength < 0.33
+                else "not strong or weak body"
+            )
+
+            hair_color = choice(["black", "brown", "blonde", "red"])
+            hair_type = choice(["straight", "curly", "wavy"])
+            hair_length = choice(["long", "short", "medium"])
+            hair_description = f"{hair_length} {hair_type} {hair_color}"
+
+            self.descriptor = (
+                f"{beauty}, {weight}, {strength}, {hair_description} haired"
+            )
+
+        return self.descriptor
 
     def calculate_attributes_product(self) -> float:
         """

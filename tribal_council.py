@@ -25,12 +25,17 @@ class TribalCouncil:
             player for player, vote_count in votes.items() if vote_count == max_votes
         ]
         random_player = random.choice(players_with_max_votes)
+        for player in self.players:
+            if player.get_full_name() == random_player:
+                random_player = player
+        if not isinstance(random_player, Player):
+            raise ValueError('The player that got voted out was not of type "Person".')
 
-        dialog(host, f"{random_player}, your tribe has spoken.")
+        dialog(host, f"{random_player.get_full_name()}, your tribe has spoken.")
 
         new_players = []
         for player in self.players:
-            if player.get_full_name() != random_player:
+            if player != random_player:
                 new_players.append(player)
 
         return new_players, random_player

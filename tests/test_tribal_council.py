@@ -36,7 +36,10 @@ def test_looping_individual_challenge_and_tribal():
         players, new_jury_member = TribalCouncil(losers).simulate()
         players.extend(winners)
 
+        assert type(new_jury_member) is Player
         assert len(players) == initial_player_count - loop
+        for player in players:
+            assert type(player) is Player
 
         jury.append(new_jury_member)
         if len(players) <= 3:

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from players import Player, host
 import random
 from utils import dialog
@@ -8,9 +8,9 @@ class TribalCouncil:
     def __init__(self, players: List[Player]):
         self.players = players
 
-    def simulate(self) -> List[Player]:
+    def simulate(self) -> Tuple[List[Player], Player]:
         """
-        Simulates a tribal council, and return the remaining players.
+        Simulates a tribal council, and return the remaining players, and the person that got voted on.
         """
         votes = {}
         for player in self.players:
@@ -33,11 +33,12 @@ class TribalCouncil:
             if player.get_full_name() != random_player:
                 new_players.append(player)
 
-        return new_players
+        return new_players, random_player
 
 
 class FinalTribalCouncil:
-    def __init__(self, players: List[Player]):
+    def __init__(self, jury: List[Player], players: List[Player]):
+        self.jury = jury
         self.players = players
 
     def simulate(self) -> str:
@@ -45,7 +46,7 @@ class FinalTribalCouncil:
         Simulates final tribal council, returns the name of the winner.
         """
         votes = {}
-        for player in self.players:
+        for player in self.jury:
             vote = player.vote(self.players)
             if vote.get_full_name() not in votes:
                 votes[vote.get_full_name()] = 1

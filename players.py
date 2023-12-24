@@ -68,7 +68,15 @@ class Player:
         return f"{self.first_name} {self.last_name}"
 
     def vote(self, players: List["Player"]) -> "Player":
+        players = players.copy()
+        try:
+            players.remove(self)
+        except:
+            pass
         random_player = choice(players)
+        print(
+            f"{self.get_full_name()} cast their vote on {random_player.get_full_name()}".upper()
+        )
         self.votes.append(random_player)
         return random_player
 

@@ -65,7 +65,7 @@ if __name__ == "__main__":
         host,
         f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
     )
-    losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
+    losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
 
     # Run challenges + tribal council until merge or tribe swap
     merge = False
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             host,
             f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
         )
-        losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
+        losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
 
         number_of_players_remaining = sum([len(tribe.players) for tribe in tribes])
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 host,
                 f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
             )
-            losing_tribe.players = TribalCouncil(losing_tribe.players).simulate()
+            losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
 
             number_of_players_remaining = sum([len(tribe.players) for tribe in tribes])
 
@@ -140,20 +140,20 @@ if __name__ == "__main__":
 
     # Loop
     players = []
+    jury = []
     for tribe in tribes:
         players.extend(tribe.players)
     while True:
-        #   Individual challenge
         winners, losers = IndividualChallenge(players).play(num_winners=1)
-        #   tribal council
-        players = TribalCouncil(losers).simulate()
+        players, new_jury_member = TribalCouncil(losers).simulate()
         players.extend(winners)
-        #   losers at tribal council get added to the jury
-        #   when there are 3 players left, exit loop
+        jury.append(new_jury_member)
         if len(players) <= 3:
             break
 
     # jury votes on who wins
-    winner = FinalTribalCouncil(players).simulate()
+    final_3 = [player.get_full_name() for player in players]
+    dialog(host, f"Here is your final 3: {final_3}")
+    winner = FinalTribalCouncil(jury, players).simulate()
 
     ...

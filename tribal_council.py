@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from players import Player, host
 import random
-from utils import dialog
+from script_write import ScriptWriter as sw
 
 
 class TribalCouncil:
@@ -31,7 +31,10 @@ class TribalCouncil:
         if not isinstance(random_player, Player):
             raise ValueError('The player that got voted out was not of type "Person".')
 
-        dialog(host, f"{random_player.get_full_name()}, your tribe has spoken.")
+        sw.add_dialog(
+            host.get_full_name(),
+            f"{random_player.get_full_name()}, your tribe has spoken.",
+        )
 
         new_players = []
         for player in self.players:
@@ -64,6 +67,8 @@ class FinalTribalCouncil:
         ]
         random_player = random.choice(players_with_max_votes)
 
-        dialog(host, f"{random_player}, you are the sole survivor.")
+        sw.add_dialog(
+            host.get_full_name(), f"{random_player}, you are the sole survivor."
+        )
 
         return random_player

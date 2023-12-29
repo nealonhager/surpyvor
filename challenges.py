@@ -3,8 +3,8 @@ from tribe import Tribe
 from random import randint
 from players import Player
 import math
-from utils import dialog
 from players import host
+from script_write import ScriptWriter as sw
 
 
 class Challenge:
@@ -67,7 +67,10 @@ class IndividualChallenge:
         """
         Determines the winning player(s), and also return the losers.
         """
-        dialog(host, "Come on in guys! Let's get right into this individual challenge.")
+        sw.add_dialog(
+            host.get_full_name(),
+            "Come on in guys! Let's get right into this individual challenge.",
+        )
         winners = []
         challenge = Challenge()
         challenge.add_puzzle()
@@ -89,11 +92,11 @@ class IndividualChallenge:
             )[0]
             winner = self.players.pop(best_player_idx)
             print(f"{winner.get_full_name()} won the individual challenge.".upper())
-            dialog(
-                host,
+            sw.add_dialog(
+                host.get_full_name(),
                 f"Congrats, {winner.get_full_name()} you are safe in tonight's tribal council. How does it feel?",
             )
-            dialog(winner, winner.get_challenge_win_speech())
+            sw.add_dialog(winner.get_full_name(), winner.get_challenge_win_speech())
             winners.append(winner)
             winner.immunity_challenges_won += 1
 

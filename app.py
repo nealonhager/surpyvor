@@ -37,12 +37,11 @@ if __name__ == "__main__":
             player.tribe.add_player(player)
 
         # Generate pictures of contenstants
-        if int(os.getenv("GENERATE_PLAYER_PICTURES", False)):
-            for player in players:
-                try:
-                    player.create_profile_image(player.tribe.color)
-                except _:
-                    print(f"{player.get_full_name()}'s image could not be created.")
+        for player in players:
+            try:
+                player.create_profile_image_prompt(player.tribe.color)
+            except _:
+                print(f"{player.get_full_name()}'s image could not be created.")
 
         dialog(
             host,

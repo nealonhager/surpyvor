@@ -256,42 +256,9 @@ class Player:
         response = completion.choices[0].message.content
         return response
 
-    def create_profile_image(self, tribe_color: str) -> str:
-        client = OpenAI()
-        prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color} clothes."
-        attempts = 3
-        while True:
-            try:
-                response = client.images.generate(
-                    model="dall-e-3",
-                    prompt=prompt,
-                    size="1024x1024",
-                    quality="standard",
-                    n=1,
-                )
-                print(prompt)
-                image_url = response.data[0].url
-
-                # Create the "images" folder if it doesn't exist
-                os.makedirs("images", exist_ok=True)
-
-                # Download the image file
-                response = requests.get(image_url)
-
-                # Extract the filename from the URL
-                filename = self.get_full_name().replace(" ", "_")
-
-                # Save the image file to the "images" folder
-                with open(f"images/{filename}.png", "wb") as file:
-                    file.write(response.content)
-                    print(f"Image downloaded and saved as {filename}")
-
-                break
-            except:
-                if attempts == 0:
-                    raise Exception(f"couldn't get an image for {self.get_full_name()}")
-
-                attempts -= 1
+    def create_profile_image_prompt(self, tribe_color: str):
+        prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. {self.profession}. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color.lower()} clothes and a {tribe_color.lower()} headband."
+        print(self.get_full_name(), ":", prompt)
 
     @staticmethod
     def get_attribute_names() -> List[str]:

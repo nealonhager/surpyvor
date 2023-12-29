@@ -12,6 +12,12 @@ class TribalCouncil:
         """
         Simulates a tribal council, and return the remaining players, and the person that got voted on.
         """
+        sw.add_action("players walk to tribal council.")
+        sw.add_dialog(
+            host.get_full_name(),
+            f"It is, time to vote. {self.players[0].get_full_name()}, start us off.",
+        )
+
         votes = {}
         for player in self.players:
             vote = player.vote(self.players)
@@ -19,6 +25,8 @@ class TribalCouncil:
                 votes[vote.get_full_name()] = 1
             else:
                 votes[vote.get_full_name()] += 1
+
+        sw.add_dialog(host.get_full_name(), "I'll go tally the votes.")
 
         max_votes = max(votes.values())
         players_with_max_votes = [

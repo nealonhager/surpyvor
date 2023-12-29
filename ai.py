@@ -4,6 +4,7 @@ import requests
 import os
 from players import Player
 from tribe import Tribe
+import json
 
 load_dotenv()
 
@@ -35,3 +36,36 @@ def create_profile_image(player: Player, tribe: Tribe) -> str:
             print(f"Image downloaded and saved as {filename}")
     else:
         print("Failed to download the image")
+
+
+if __name__ == "__main__":
+    client = OpenAI()
+
+    completion = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful writing assistant, generating dialog for a reality TV show script. You will simulate dialog between characters.",
+            },
+            {
+                "role": "system",
+                "content": "Some info on the state of the game: The team stage is over, and we are now in the individual game. There are 9 players left in the game. The player felt confident they were safe before this challenge and wouldn't be voted out.",
+            },
+            {
+                "role": "user",
+                "content": 'The host, Jeff, says "Nice job on winning the challenge, you are safe from tribal council tonight. How does it feel?" Tim Kennedy replies:',
+            },
+        ],
+        # tools=[
+        #     {
+        #         "type": "function",
+        #         "function": {
+        #             "name": "get_challenge_win_response",
+        #             "description": "generates a line of dialog for a player that won a challenge.",
+        #         },
+        #     },
+        # ],
+    )
+
+    print(completion.choices[0].message.content)

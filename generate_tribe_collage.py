@@ -22,7 +22,7 @@ def main():
     image_list = [Image.open(image_url) for image_url in image_list]
 
     # generate a png of image_list in  a grid where each image is 500x500 px
-    image_grid(image_list, 4, 5).save("grid.png")
+    image_grid(image_list, 3, 6).save("grid.png")
 
 
 if __name__ == "__main__":

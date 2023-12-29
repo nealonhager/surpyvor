@@ -45,6 +45,66 @@ def generate_age() -> int:
     return choices(ages, weights=weights, k=1)[0]
 
 
+def generate_home_state() -> str:
+    """
+    Randomly selects a state from the USA.
+    """
+    return choice(
+        [
+            "Alabama",
+            "Alaska",
+            "Arizona",
+            "Arkansas",
+            "California",
+            "Colorado",
+            "Connecticut",
+            "Delaware",
+            "Florida",
+            "Georgia",
+            "Hawaii",
+            "Idaho",
+            "Illinois",
+            "Indiana",
+            "Iowa",
+            "Kansas",
+            "Kentucky",
+            "Louisiana",
+            "Maine",
+            "Maryland",
+            "Massachusetts",
+            "Michigan",
+            "Minnesota",
+            "Mississippi",
+            "Missouri",
+            "Montana",
+            "Nebraska",
+            "Nevada",
+            "New Hampshire",
+            "New Jersey",
+            "New Mexico",
+            "New York",
+            "North Carolina",
+            "North Dakota",
+            "Ohio",
+            "Oklahoma",
+            "Oregon",
+            "Pennsylvania",
+            "Rhode Island",
+            "South Carolina",
+            "South Dakota",
+            "Tennessee",
+            "Texas",
+            "Utah",
+            "Vermont",
+            "Virginia",
+            "Washington",
+            "West Virginia",
+            "Wisconsin",
+            "Wyoming",
+        ]
+    )
+
+
 @dataclass
 class Player:
     tribe = None
@@ -61,6 +121,7 @@ class Player:
     reward_challenges_won: int = 0
     votes_to_cast: int = 1
     hunger: float = 0
+    home_state: str = field(default_factory=generate_home_state)
 
     # Attributes
     agreeability: float = field(default_factory=random)
@@ -164,29 +225,36 @@ class Player:
         return math.prod(list(self.get_attributes().values()))
 
     def get_challenge_win_speech(self) -> str:
-        options = [
-            "Like I just got a get-out-of-jail-free card in Monopoly!",
-            "Feels like Christmas came early this year, Jeff!",
-            "I'm on cloud nine and it's a great view!",
-            "Better than my morning coffee, and that's saying something!",
-            "Like I've just aced a test I didn't study for!",
-            "As if I've found an oasis in a desert!",
-            "Imagine winning the lottery, but for your life!",
-            "It's like a weight's been lifted off my shoulders.",
-            "I'm more relieved than a kid on summer vacation!",
-            "It's the Survivor equivalent of a victory lap!",
-            "Like a gladiator who just won the coliseum fight!",
-            "It's a mix of shock, joy, and pure adrenaline!",
-            "I'm buzzing more than a bee on honey!",
-            "Feels like I've dodged a bullet, literally!",
-            "I'm the cat that got the cream, Jeff.",
-            "It's like finding the last piece of a puzzle!",
-            "Better than any high school prom night!",
-            "I feel like I've just been reborn in this game!",
-            "It's a surreal moment, like walking on air!",
-            "Like I've just been given a second chance at life!",
-        ]
-        return choice(options)
+        client = OpenAI()
+
+        player_info = self.get_attributes()
+        player_info["hunger"] = self.hunger
+        player_info["home_state"] = self.home_state
+
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful writing assistant, generating dialog for a reality TV show script. You will simulate dialog between characters.",
+                },
+                {
+                    "role": "system",
+                    "content": f"Some info on the player (if the value is a decimal, the range is from 0-1): {str(player_info)}.",
+                },
+                {
+                    "role": "user",
+                    "content": "The host, Jeff, says: Nice job on winning the challenge, you are safe from tribal council tonight. How does it feel?",
+                },
+                {
+                    "role": "user",
+                    "content": "The player replies: ",
+                },
+            ],
+        )
+
+        response = completion.choices[0].message.content
+        return response
 
     def create_profile_image(self, tribe_color: str) -> str:
         client = OpenAI()

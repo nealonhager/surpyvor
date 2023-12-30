@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from players import Player, host
 import random
 from script_write import ScriptWriter as sw
@@ -9,7 +9,9 @@ class TribalCouncil:
     def __init__(self, players: List[Player]):
         self.players = players
 
-    def simulate(self) -> Tuple[List[Player], Player]:
+    def simulate(
+        self, jury: Union[List[Player], None] = None
+    ) -> Tuple[List[Player], Player]:
         """
         Simulates a tribal council, and return the remaining players, and the person that got voted on.
         """
@@ -80,9 +82,12 @@ class TribalCouncil:
             if player != voted_out_player:
                 new_players.append(player)
 
+        jury_mod = (
+            "" if jury is None else f", and the #{len(jury)+1} member of our jury"
+        )
         sw.add_dialog(
             host.get_full_name(),
-            f"n-th person voted out of surpyvor: {voted_out_player.get_full_name()}",
+            f"n-th person voted out of surpyvor{jury_mod}: {voted_out_player.get_full_name()}",
         )
         sw.add_action(
             f"{voted_out_player.get_full_name()} get's their torch snuffed out."

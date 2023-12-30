@@ -127,7 +127,7 @@ if __name__ == "__main__":
         # )
 
         # Tribal council
-        players, new_jury_member = TribalCouncil(losers).simulate()
+        players, new_jury_member = TribalCouncil(losers).simulate(jury=jury)
         players.extend(winners)
         jury.append(new_jury_member)
 

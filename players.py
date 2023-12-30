@@ -282,7 +282,7 @@ class Player:
         social_threats = []
         for player in players:
             threat_level = player.determine_social_threat_level()
-            print(player.get_full_name(), threat_level, "social threat score")
+            # print(player.get_full_name(), threat_level, "social threat score")
             if len(social_threats) < 3:
                 social_threats.append((player, threat_level))
                 social_threats = sorted(
@@ -299,7 +299,7 @@ class Player:
         challenge_threats = []
         for player in players:
             threat_level = player.determine_challenge_threat_level()
-            print(player.get_full_name(), threat_level, "challenge threat score")
+            # print(player.get_full_name(), threat_level, "challenge threat score")
             if len(challenge_threats) < 3:
                 challenge_threats.append((player, threat_level))
                 challenge_threats = sorted(
@@ -416,7 +416,8 @@ class Player:
             return "good."
 
     def create_profile_image_prompt(self, tribe_color: str):
-        prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. {self.profession}. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color.lower()} clothes and a {tribe_color.lower()} headband."
+        prompt = os.environ.get("PLAYER_PORTRAIT_PROMPT")
+        prompt = eval(f'f"{prompt}"')
         print(self.get_full_name(), ":", prompt)
 
     def talk_to(self, other_player: "Player", topic: str):

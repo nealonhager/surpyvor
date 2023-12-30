@@ -160,7 +160,7 @@ class Player:
         self.generate_descriptors()
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name} ({self.tribe.color + ' tribe' if self.tribe else ''})"
+        return f"{self.first_name} {self.last_name} ({self.tribe.color if self.tribe else 'no'} tribe)"
 
     def create_bond(self, other_player: "Player") -> Relationship:
         """

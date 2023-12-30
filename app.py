@@ -35,7 +35,7 @@ if __name__ == "__main__":
         player.tribe = tribes[i % num_tribes]
         player.tribe.add_player(player)
 
-    # Generate pictures of contenstants
+    # Generate profile picture prompts for players
     for player in players:
         player.create_profile_image_prompt(player.tribe.color)
 
@@ -109,14 +109,15 @@ if __name__ == "__main__":
 
     # Individual game
     # Loop until final 3
+
     players = []
     jury = []
 
-    for player in players:
-        player.tribe = None
-
     for tribe in tribes:
         players.extend(tribe.players)
+
+    for player in players:
+        player.tribe = None
 
     while True:
         winners, losers = IndividualChallenge(players).play(num_winners=1)

@@ -48,13 +48,25 @@ class GroupChallenge:
     def __init__(self, groups: List[Tribe]):
         self.groups = groups
 
-    def play(self) -> Tuple[Tribe, Optional[Tribe]]:
+    def play(self, announce: bool = True) -> Tuple[Tribe, Optional[Tribe]]:
         """
         Determines a winning group, and optionally a losing group.
         """
+        if announce:
+            sw.add_dialog(host.get_full_name(), "Come on in guys!")
+
         winner = self.groups.pop(randint(0, len(self.groups) - 1))
         loser = self.groups.pop(randint(0, len(self.groups) - 1))
 
+        sw.add_dialog(
+            host.get_full_name(),
+            f"{winner.color} tribe wins it, and is safe from elimination!",
+        )
+        sw.add_dialog(
+            host.get_full_name(),
+            f"{loser.color} tribe, got nothing for you, see you tonight at tribal council.",
+        )
+        sw.add_action("Players walk back to their camps.")
         return winner, loser
 
 
@@ -100,4 +112,5 @@ class IndividualChallenge:
             winners.append(winner)
             winner.immunity_challenges_won += 1
 
+        sw.add_action("Players walk back to their camps.")
         return winners, self.players

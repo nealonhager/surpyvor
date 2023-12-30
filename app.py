@@ -53,34 +53,15 @@ if __name__ == "__main__":
 
     # First Tribal Council
     sw.add_dialog(host.get_full_name(), "Let's get right into the first challenge.")
-    winning_tribe, losing_tribe = GroupChallenge(tribes).play()
+    winning_tribe, losing_tribe = GroupChallenge(tribes).play(announce=False)
     tribes = [winning_tribe, losing_tribe, *tribes]
-    sw.add_dialog(
-        host.get_full_name(),
-        f"{winning_tribe.color} tribe wins it, and is safe from elimination!",
-    )
-    sw.add_dialog(
-        host.get_full_name(),
-        f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
-    )
     losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
-
-    sw.add_action("Players walk back to their camps.")
 
     # Run challenges + tribal council until merge or tribe swap
     merge = False
     while True:
-        sw.add_dialog(host.get_full_name(), "Come on in guys!")
         winning_tribe, losing_tribe = GroupChallenge(tribes).play()
         tribes = [winning_tribe, losing_tribe, *tribes]
-        sw.add_dialog(
-            host.get_full_name(),
-            f"{winning_tribe.color} tribe wins it, and is safe from elimination!",
-        )
-        sw.add_dialog(
-            host.get_full_name(),
-            f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
-        )
         losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
 
         number_of_players_remaining = sum([len(tribe.players) for tribe in tribes])
@@ -114,17 +95,8 @@ if __name__ == "__main__":
             player.tribe.add_player(player)
 
         while True:
-            sw.add_dialog(host.get_full_name(), "Come on in guys!")
             winning_tribe, losing_tribe = GroupChallenge(tribes).play()
             tribes = [winning_tribe, losing_tribe, *tribes]
-            sw.add_dialog(
-                host.get_full_name(),
-                f"{winning_tribe.color} tribe wins it, and is safe from elimination!",
-            )
-            sw.add_dialog(
-                host.get_full_name(),
-                f"{losing_tribe.color} tribe, got nothing for you, see you tonight at tribal council.",
-            )
             losing_tribe.players, _ = TribalCouncil(losing_tribe.players).simulate()
 
             number_of_players_remaining = sum([len(tribe.players) for tribe in tribes])

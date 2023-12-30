@@ -13,7 +13,7 @@ load_dotenv()
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename="log.log", filemode="w", level=logging.INFO)
+    logging.basicConfig(filename=".log", filemode="w", level=logging.INFO)
     sw.clear_file()
     players = []
 

@@ -226,50 +226,25 @@ class Player:
             pass
 
         # Pick the 3 biggest social threats
-        social_threats = []
+        threat_levels = []
         for player in players:
-            threat_level = self.determine_social_threat_level(player)
-            logging.info(
-                f"{self.get_full_name()} determines {player.get_full_name()} to have a social threat of: {threat_level}"
-            )
-            if len(social_threats) < 3:
-                social_threats.append((player, threat_level))
-                social_threats = sorted(
-                    social_threats, reverse=True, key=lambda x: x[1]
-                )
-            elif threat_level > social_threats[-3][1]:
-                social_threats = social_threats[1:]
-                social_threats.append((player, threat_level))
-                social_threats = sorted(
-                    social_threats, reverse=True, key=lambda x: x[1]
-                )
+            social_threat_level = self.determine_social_threat_level(player)
+            challenge_threat_level = self.determine_challenge_threat_level(player)
+            threat_levels.append((player, social_threat_level + challenge_threat_level))
 
-        # Pick the 3 biggest challenge threats
-        challenge_threats = []
-        for player in players:
-            threat_level = self.determine_challenge_threat_level(player)
             logging.info(
-                f"{self.get_full_name()} determines {player.get_full_name()} to have a challenge threat of: {threat_level}"
+                f"{self.get_full_name()} determines {player.get_full_name()} to have a social threat of: {social_threat_level}"
             )
-            if len(challenge_threats) < 3:
-                challenge_threats.append((player, threat_level))
-                challenge_threats = sorted(
-                    challenge_threats, reverse=True, key=lambda x: x[1]
-                )
-            elif threat_level > challenge_threats[-3][1]:
-                challenge_threats = challenge_threats[1:]
-                challenge_threats.append((player, threat_level))
-                challenge_threats = sorted(
-                    challenge_threats, reverse=True, key=lambda x: x[1]
-                )
+            logging.info(
+                f"{self.get_full_name()} determines {player.get_full_name()} to have a challenge threat of: {challenge_threat_level}"
+            )
 
-        random_player = choice([p[0] for p in social_threats + challenge_threats])
-        logging.info(
-            f"{self.get_full_name()} casts their vote on {random_player.get_full_name()}".upper()
-        )
-        sw.add_action(f"{self.get_full_name()} casts their vote.")
-        self.votes.append(random_player)
-        return random_player
+        vote = max(threat_levels, key=lambda x: x[1])[0]
+
+        logging.info(f"{self} casts their vote on {vote}".upper())
+        sw.add_action(f"{self} casts their vote.")
+        self.votes.append(vote)
+        return vote
 
     def get_attributes(self) -> dict:
         """

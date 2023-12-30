@@ -7,6 +7,8 @@ from openai import OpenAI
 import math
 from relationship import Relationship
 import logging
+import conversation
+from script_write import ScriptWriter as sw
 
 
 def get_random_job() -> str:
@@ -119,6 +121,8 @@ class Player:
     profession: str = field(default_factory=get_random_job)
     advantages: list = field(default_factory=list)
     relationships: list = field(default_factory=list)
+    events: list = field(default_factory=list)
+    conversation_history: list = field(default_factory=list)
     votes: list = field(default_factory=list)
     times_voted_on: int = 0
     immunity_challenges_won: int = 0
@@ -153,22 +157,21 @@ class Player:
         self.first_name = names.get_first_name(gender=self.gender)
         self.generate_descriptors()
 
-    def create_bond(self, other_player: "Player"):
+    def create_bond(self, other_player: "Player") -> Relationship:
         """
         Creates a mutual relationship with another player.
         """
-        found = False
         for relationship in self.relationships:
             if relationship.player == other_player:
                 logging.warning(
                     f"{self.get_full_name()} already has a relationship with {other_player.get_full_name()}."
                 )
-                found = True
-                break
+                return relationship
 
-        if not found:
-            self.relationships.append(Relationship(player=other_player))
-            other_player.create_bond(self)
+        new_relationship = Relationship(player=other_player)
+        self.relationships.append(new_relationship)
+        other_player.create_bond(self)
+        return new_relationship
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
@@ -309,6 +312,7 @@ class Player:
         print(
             f"{self.get_full_name()} cast their vote on {random_player.get_full_name()}".upper()
         )
+        sw.add_action(f"{self.get_full_name()} cast their vote.")
         self.votes.append(random_player)
         return random_player
 
@@ -407,6 +411,16 @@ class Player:
     def create_profile_image_prompt(self, tribe_color: str):
         prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. {self.profession}. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color.lower()} clothes and a {tribe_color.lower()} headband."
         print(self.get_full_name(), ":", prompt)
+
+    def talk_to(self, other_player: "Player", topic: str):
+        convo = conversation.simulate_conversation(
+            topic=topic, players=[self, other_player]
+        )
+
+        self.conversation_history.append(convo)
+        self.events.append(f"I talk to {other_player} about {topic}.")
+        other_player.conversation_history.append(convo)
+        other_player.events.append(f"{other_player} talked to me about {topic}.")
 
     @staticmethod
     def get_attribute_names() -> List[str]:

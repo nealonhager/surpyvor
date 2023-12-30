@@ -1,5 +1,5 @@
 from players import Player, host
-from random import randint, shuffle
+from random import randint, shuffle, choice
 from tribe import TribeFactory
 from challenges import GroupChallenge, IndividualChallenge
 from tribal_council import TribalCouncil, FinalTribalCouncil
@@ -136,22 +136,33 @@ if __name__ == "__main__":
                 break
         sw.add_dialog(host.get_full_name(), "Drop your buffs, because we're merging.")
 
-    # Loop
+    # Individual game
+    # Loop until final 3
     players = []
     jury = []
+
     for tribe in tribes:
         players.extend(tribe.players)
+
     while True:
         winners, losers = IndividualChallenge(players).play(num_winners=1)
+
+        # Simulate conversations at camp
+        convo_starter = choice(players)
+        # convo_starter.talk_to(
+        #     choice([player for player in players if player != convo_starter]),
+        #     "who you think a big threat is.",
+        # )
+
+        # Tribal council
         players, new_jury_member = TribalCouncil(losers).simulate()
         players.extend(winners)
         jury.append(new_jury_member)
+
         if len(players) <= 3:
             break
 
-    # jury votes on who wins
+    # Jury votes on who wins
     final_3 = [player.get_full_name() for player in players]
-    sw.add_dialog(host.get_full_name(), f"Here is your final 3: {final_3}")
+    sw.add_dialog(host.get_full_name(), f"Here is your final 3: {','.join(final_3)}")
     winner = FinalTribalCouncil(jury, players).simulate()
-
-    ...

@@ -32,24 +32,24 @@ class TribalCouncil:
         players_with_max_votes = [
             player for player, vote_count in votes.items() if vote_count == max_votes
         ]
-        random_player = random.choice(players_with_max_votes)
+        voted_out_player = random.choice(players_with_max_votes)
         for player in self.players:
-            if player.get_full_name() == random_player:
-                random_player = player
-        if not isinstance(random_player, Player):
+            if player.get_full_name() == voted_out_player:
+                voted_out_player = player
+        if not isinstance(voted_out_player, Player):
             raise ValueError('The player that got voted out was not of type "Person".')
 
         sw.add_dialog(
             host.get_full_name(),
-            f"{random_player.get_full_name()}, your tribe has spoken.",
+            f"{voted_out_player.get_full_name()}, your tribe has spoken.\n\n",
         )
 
         new_players = []
         for player in self.players:
-            if player != random_player:
+            if player != voted_out_player:
                 new_players.append(player)
 
-        return new_players, random_player
+        return new_players, voted_out_player
 
 
 class FinalTribalCouncil:

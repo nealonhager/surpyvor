@@ -225,7 +225,6 @@ class Player:
         except:
             pass
 
-        # Pick the 3 biggest social threats
         threat_levels = []
         for player in players:
             social_threat_level = self.determine_social_threat_level(player)

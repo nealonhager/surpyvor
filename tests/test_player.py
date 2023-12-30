@@ -24,7 +24,7 @@ def test_descriptor():
 
 
 def test_chacter_image_creation():
-    if int(os.environ.get("TEST_WITH_API_KEY")) == 1:
+    if int(os.environ.get("USE_API_KEY")) == 1:
         player = Player()
         print(player.descriptor)
         player.create_profile_image_prompt_prompt("red")

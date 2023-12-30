@@ -38,9 +38,10 @@ class TribalCouncil:
 
             if len(tally) > 1:
                 for k, v in tally_grouped.items():
-                    _dialog += f"{v} votes {k}. "
-                if len(votes) != len(tally):
-                    _dialog += f"{len(votes) - len(tally)} votes left. "
+                    _dialog += f"{v} vote{'s' if v > 1 else ''} {k}. "
+                votes_remaining = len(votes) - len(tally)
+                if votes_remaining in range(1, 3):
+                    _dialog += f"{len(votes) - len(tally)} vote{'s' if len(votes) - len(tally) > 1 else ''} left. "
 
             return _dialog
 

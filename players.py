@@ -9,6 +9,7 @@ from relationship import Relationship
 import logging
 import conversation
 from script_write import ScriptWriter as sw
+import os
 
 
 def get_random_job() -> str:
@@ -380,36 +381,39 @@ class Player:
         return math.prod(list(self.get_attributes().values()))
 
     def get_challenge_win_speech(self) -> str:
-        client = OpenAI()
+        if int(os.environ.get("USE_API_KEY")) == 1:
+            client = OpenAI()
 
-        player_info = self.get_attributes()
-        player_info["hunger"] = self.hunger
-        player_info["home_state"] = self.home_state
+            player_info = self.get_attributes()
+            player_info["hunger"] = self.hunger
+            player_info["home_state"] = self.home_state
 
-        completion = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful writing assistant, generating dialog for a reality TV show script. You will simulate dialog between characters.",
-                },
-                {
-                    "role": "system",
-                    "content": f"Some info on the player (if the value is a decimal, the range is from 0-1): {str(player_info)}.",
-                },
-                {
-                    "role": "user",
-                    "content": "The host, Jeff, says: Nice job on winning the challenge, you are safe from tribal council tonight. How does it feel?",
-                },
-                {
-                    "role": "user",
-                    "content": "The player replies: ",
-                },
-            ],
-        )
+            completion = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful writing assistant, generating dialog for a reality TV show script. You will simulate dialog between characters.",
+                    },
+                    {
+                        "role": "system",
+                        "content": f"Some info on the player (if the value is a decimal, the range is from 0-1): {str(player_info)}.",
+                    },
+                    {
+                        "role": "user",
+                        "content": "The host, Jeff, says: Nice job on winning the challenge, you are safe from tribal council tonight. How does it feel?",
+                    },
+                    {
+                        "role": "user",
+                        "content": "The player replies: ",
+                    },
+                ],
+            )
 
-        response = completion.choices[0].message.content
-        return response
+            response = completion.choices[0].message.content
+            return response
+        else:
+            return "good."
 
     def create_profile_image_prompt(self, tribe_color: str):
         prompt = f"A closeup portrait of a {self.generate_descriptors()} {generate_race()} {self.gender}. {self.age} years old. {self.profession}. Standing on an empty beach in fiji. sunny day. wearing casual {tribe_color.lower()} clothes and a {tribe_color.lower()} headband."

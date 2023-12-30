@@ -5,6 +5,8 @@ from typing import List
 import math
 from openai import OpenAI
 import math
+from relationship import Relationship
+import logging
 
 
 def get_random_job() -> str:
@@ -24,6 +26,9 @@ def get_random_job() -> str:
 
 
 def generate_race() -> str:
+    """
+    Randomly selects a race.
+    """
     return choice(
         [
             "white",
@@ -147,6 +152,23 @@ class Player:
         self.gender = choice(["male", "female"])
         self.first_name = names.get_first_name(gender=self.gender)
         self.generate_descriptors()
+
+    def create_bond(self, other_player: "Player"):
+        """
+        Creates a mutual relationship with another player.
+        """
+        found = False
+        for relationship in self.relationships:
+            if relationship.player == other_player:
+                logging.warning(
+                    f"{self.get_full_name()} already has a relationship with {other_player.get_full_name()}."
+                )
+                found = True
+                break
+
+        if not found:
+            self.relationships.append(Relationship(player=other_player))
+            other_player.create_bond(self)
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"

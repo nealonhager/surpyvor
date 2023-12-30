@@ -20,7 +20,7 @@ class ScriptWriter:
         """
         Writes dialog to the script file.
         """
-        cls.write_to_file(f"{name.upper()}\n\t{dialog}")
+        cls.write_to_file(f"{name.upper()}: {dialog}")
 
     @classmethod
     def add_action(cls, action: str):

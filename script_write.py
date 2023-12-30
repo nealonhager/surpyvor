@@ -1,3 +1,6 @@
+import logging
+
+
 class ScriptWriter:
     @staticmethod
     def write_to_file(text: str):
@@ -6,6 +9,8 @@ class ScriptWriter:
         """
         with open("script.txt", "a") as file:
             file.write(f"{text}\n\n")
+
+        logging.info(f"{text}")
 
     @staticmethod
     def clear_file():

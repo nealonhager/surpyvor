@@ -113,6 +113,7 @@ def generate_home_state() -> str:
     )
 
 
+@dataclass
 class Player:
     tribe = None
     gender = None
@@ -159,7 +160,7 @@ class Player:
         self.generate_descriptors()
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name}, {self.tribe.color + 'tribe' if self.tribe else ''}"
+        return f"{self.first_name} {self.last_name} ({self.tribe.color + ' tribe' if self.tribe else ''})"
 
     def create_bond(self, other_player: "Player") -> Relationship:
         """
@@ -228,7 +229,7 @@ class Player:
         social_threats = []
         for player in players:
             threat_level = self.determine_social_threat_level(player)
-            print(
+            logging.info(
                 f"{self.get_full_name()} determines {player.get_full_name()} to have a social threat of: {threat_level}"
             )
             if len(social_threats) < 3:
@@ -247,7 +248,7 @@ class Player:
         challenge_threats = []
         for player in players:
             threat_level = self.determine_challenge_threat_level(player)
-            print(
+            logging.info(
                 f"{self.get_full_name()} determines {player.get_full_name()} to have a challenge threat of: {threat_level}"
             )
             if len(challenge_threats) < 3:
@@ -263,7 +264,7 @@ class Player:
                 )
 
         random_player = choice([p[0] for p in social_threats + challenge_threats])
-        print(
+        logging.info(
             f"{self.get_full_name()} casts their vote on {random_player.get_full_name()}".upper()
         )
         sw.add_action(f"{self.get_full_name()} casts their vote.")
@@ -368,12 +369,13 @@ class Player:
     def create_profile_image_prompt(self, tribe_color: str):
         prompt = os.environ.get("PLAYER_PORTRAIT_PROMPT")
         prompt = eval(f'f"{prompt}"')
-        print(self.get_full_name(), ":", prompt)
+        logging.info(f"{self.get_full_name()}: { prompt }")
 
     def talk_to(self, other_player: "Player", topic: str):
         convo = conversation.simulate_conversation(
             topic=topic, players=[self, other_player]
         )
+        logging.info(f"{self} talks to {other_player} about {topic}: {convo}")
 
         self.conversation_history.append(convo)
         other_player.conversation_history.append(convo)

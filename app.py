@@ -7,11 +7,13 @@ from script_write import ScriptWriter as sw
 from dataclasses import asdict
 import json
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename="log.log", filemode="w", level=logging.INFO)
     sw.clear_file()
     players = []
 
@@ -35,10 +37,7 @@ if __name__ == "__main__":
 
     # Generate pictures of contenstants
     for player in players:
-        try:
-            player.create_profile_image_prompt(player.tribe.color)
-        except _:
-            print(f"{player.get_full_name()}'s image could not be created.")
+        player.create_profile_image_prompt(player.tribe.color)
 
     sw.add_dialog(
         host.get_full_name(),

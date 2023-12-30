@@ -5,6 +5,7 @@ from players import Player
 import math
 from players import host
 from script_write import ScriptWriter as sw
+import logging
 
 
 class Challenge:
@@ -103,7 +104,9 @@ class IndividualChallenge:
                 enumerate(self.attribute_products), key=lambda x: x[1]
             )[0]
             winner = self.players.pop(best_player_idx)
-            print(f"{winner.get_full_name()} won the individual challenge.".upper())
+            logging.info(
+                f"{winner.get_full_name()} won the individual challenge.".upper()
+            )
             sw.add_dialog(
                 host.get_full_name(),
                 f"Congrats, {winner.get_full_name()} you are safe in tonight's tribal council. How does it feel?",

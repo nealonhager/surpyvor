@@ -1,8 +1,10 @@
 # SURPYVOR
 
-A Survivor Simulator
+A Survivor Simulator.
 
-![Picture of generated tribes](generated_tribes.png)
+| White Tribe Player                            | Yellow Tribe Player                           | Blue Tribe Player                             |
+| --------------------------------------------- | --------------------------------------------- | --------------------------------------------- |
+| ![Picture of generated player 1](player1.png) | ![Picture of generated player 1](player2.png) | ![Picture of generated player 1](player3.png) |
 
 ## Known Bugs:
 
@@ -10,10 +12,13 @@ A Survivor Simulator
 
 - add state of game summary function
 - add more conversations
-- add relationship to conversations
-- add remaining characters to conversations
-- add talk about jury to conversations
-- generate proper perceived social threat level
-- generate proper perceived challenge threat level
+- improve conversations
+  - add relationship to conversations
+  - add remaining characters to conversations
+  - add talk about jury to conversations
+- improve perceived social threat level
+- improve perceived challenge threat level
 - add tie logic to tribal council
 - improve challenges
+
+ALL IMAGES AND NAMES ARE GENERATED AND NOT BASED ON REAL PEOPLE.

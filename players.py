@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from random import random, choices, choice
 import names
-from typing import List
+from typing import List, Union, Optional
+from enum import Enum, auto
 import math
 from openai import OpenAI
 import math
@@ -112,7 +113,6 @@ def generate_home_state() -> str:
     )
 
 
-@dataclass
 class Player:
     tribe = None
     gender = None
@@ -153,13 +153,13 @@ class Player:
     # Descriptor
     descriptor: str = ""
 
-    # def __hash__(self):
-    #     return hash((self.get_full_name(), self.age, self.home_state))
-
     def __post_init__(self):
         self.gender = choice(["male", "female"])
         self.first_name = names.get_first_name(gender=self.gender)
         self.generate_descriptors()
+
+    def __repr__(self):
+        return f"{self.first_name} {self.last_name}, {self.tribe.color + 'tribe' if self.tribe else ''}"
 
     def create_bond(self, other_player: "Player") -> Relationship:
         """
@@ -180,96 +180,42 @@ class Player:
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
-    def determine_social_threat_level(self) -> float:
+    def determine_social_threat_level(self, target_player: "Player") -> float:
         """
-        Returns a number between 0 and 1 that represents the players social threat level.
+        Calculates the currents players perception of another player's social threat level.
         """
 
-        # Attributes contributing to social threat
-        all_attributes = [
-            "tribe",
-            "gender",
-            "first_name",
-            "last_name",
-            "age",
-            "profession",
-            "advantages",
-            "relationships",
-            "votes",
-            "times_voted_on",
-            "immunity_challenges_won",
-            "reward_challenges_won",
-            "votes_to_cast",
-            "hunger",
-            "home_state",
-            "agreeability",
-            "boldness",
-            "strength",
-            "intelligence",
-            "emotional_intelligence",
-            "endurance",
-            "charisma",
-            "loyalty",
-            "strategic_ability",
-            "popularity",
-            "survival_skills",
-            "creativity",
-            "fortitude",
-            "pride",
-            "balance",
-            "speed",
-        ]
+        threat_level = 0
 
-        # Attributes That Positively Contribute to Social Threat:
+        threat_level += 1 if target_player.tribe == self.tribe else -1
+        threat_level += target_player.charisma
+        threat_level -= target_player.pride
+        threat_level += target_player.intelligence
+        threat_level += target_player.emotional_intelligence
+        threat_level += target_player.popularity
+        threat_level += target_player.loyalty * (
+            1 if target_player.tribe == self.tribe else -1
+        )
 
-        # Advantages: Like finding a golden ticket in your chocolate bar, these are huge.
-        # Relationships: Having allies is like having an army of secret ninjas.
-        # Votes: If you're getting votes, you're obviously doing something right... or very wrong.
-        # Immunity Challenges Won: This is like wearing an "I'm untouchable" T-shirt.
-        # Reward Challenges Won: It's not just about the prize, it's about the bragging rights.
-        # Charisma, Emotional Intelligence, Strategic Ability, Popularity: These are your social superpowers.
-        # Loyalty: It's a double-edged sword. High loyalty can make you a trustworthy ally, but also a threat.
+        return threat_level
 
-        # Attributes That Negatively Contribute to Social Threat:
-
-        # Times Voted On: If you're often on the chopping block, you're seen as less of a threat.
-        # Hunger: Let's face it, a hungry player is a less effective player.
-        # Pride: Too much of it and you might rub people the wrong way.
-
-        # Attributes That Are Neutral or Context-Dependent:
-
-        # Tribe, Gender, First Name, Last Name, Age, Profession, Home State: These are more about the background noise, not the music.
-        # Votes to Cast: It's not about how many votes you have, but how you use them.
-        # Agreeability, Boldness, Strength, Intelligence, Endurance, Survival Skills, Creativity, Fortitude, Balance, Speed: These are tools in your toolbox. Good to have, but it's all about how you use them.
-
-        return 1
-
-    def determine_challenge_threat_level(self) -> float:
+    def determine_challenge_threat_level(self, target_player: "Player") -> float:
         """
-        Returns a number between 0 and 1 that represents the players challenge threat level.
+        Calculates the currents players perception of another player's challenge threat level.
         """
-        # Positive Contributions:
+        threat_level = 0
 
-        # Advantages: Like finding a golden ticket in a chocolate bar, these are always a plus.
-        # Relationships: Allies are like your personal army in this battle of wits and wills.
-        # Immunity Challenges Won: A badge of honor and a neon sign screaming "Threat!"
-        # Reward Challenges Won: Less crucial than immunity, but still a feather in your cap.
-        # Votes to Cast: More votes, more power. Simple as that.
-        # Agreeability: Likable players can be a threat in a sneaky, smiley way.
-        # Boldness: Bold moves can be game-changing.
-        # Strength, Intelligence, Emotional Intelligence, Endurance, Charisma, Loyalty, Strategic Ability, Popularity, Survival Skills, Creativity, Fortitude, Balance, Speed: These are your survival superpowers.
+        threat_level += target_player.strength
+        threat_level += target_player.endurance
+        threat_level += target_player.intelligence
+        threat_level += target_player.creativity
+        threat_level += target_player.fortitude
+        threat_level -= target_player.hunger
+        threat_level += target_player.speed
+        threat_level += target_player.reward_challenges_won
+        threat_level += target_player.immunity_challenges_won
 
-        # Negative Contributions:
-
-        # Times Voted On: Like being picked last in gym class, it can signal vulnerability.
-        # Hunger: Starving players might not perform well. Snickers should consider sponsoring.
-        # Pride: Can lead to a fall, both literally and metaphorically.
-
-        # Neutral/Irrelevant:
-
-        # Tribe, Gender, First Name, Last Name, Age, Profession, Home State: These are more like your player ID badge, not directly affecting your threat level in challenges.
-
-        return 1
+        return threat_level
 
     def vote(self, players: List["Player"]) -> "Player":
         players = players.copy()
@@ -281,8 +227,10 @@ class Player:
         # Pick the 3 biggest social threats
         social_threats = []
         for player in players:
-            threat_level = player.determine_social_threat_level()
-            # print(player.get_full_name(), threat_level, "social threat score")
+            threat_level = self.determine_social_threat_level(player)
+            print(
+                f"{self.get_full_name()} determines {player.get_full_name()} to have a social threat of: {threat_level}"
+            )
             if len(social_threats) < 3:
                 social_threats.append((player, threat_level))
                 social_threats = sorted(
@@ -298,8 +246,10 @@ class Player:
         # Pick the 3 biggest challenge threats
         challenge_threats = []
         for player in players:
-            threat_level = player.determine_challenge_threat_level()
-            # print(player.get_full_name(), threat_level, "challenge threat score")
+            threat_level = self.determine_challenge_threat_level(player)
+            print(
+                f"{self.get_full_name()} determines {player.get_full_name()} to have a challenge threat of: {threat_level}"
+            )
             if len(challenge_threats) < 3:
                 challenge_threats.append((player, threat_level))
                 challenge_threats = sorted(
@@ -314,9 +264,9 @@ class Player:
 
         random_player = choice([p[0] for p in social_threats + challenge_threats])
         print(
-            f"{self.get_full_name()} cast their vote on {random_player.get_full_name()}".upper()
+            f"{self.get_full_name()} casts their vote on {random_player.get_full_name()}".upper()
         )
-        sw.add_action(f"{self.get_full_name()} cast their vote.")
+        sw.add_action(f"{self.get_full_name()} casts their vote.")
         self.votes.append(random_player)
         return random_player
 
@@ -426,9 +376,7 @@ class Player:
         )
 
         self.conversation_history.append(convo)
-        self.events.append(f"I talk to {other_player} about {topic}.")
         other_player.conversation_history.append(convo)
-        other_player.events.append(f"{other_player} talked to me about {topic}.")
 
     @staticmethod
     def get_attribute_names() -> List[str]:

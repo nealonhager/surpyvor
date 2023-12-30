@@ -15,3 +15,5 @@ A Survivor Simulator
 - add talk about jury to conversations
 - generate proper perceived social threat level
 - generate proper perceived challenge threat level
+- add tie logic to tribal council
+- improve challenges

@@ -97,6 +97,7 @@ class TribalCouncil:
             f"{voted_out_player.get_full_name()} your tribe has spoken.",
         )
         sw.add_action("Players walk back to their camps.")
+        sw.add_action("Day ends.\n\n")
 
         return new_players, voted_out_player
 

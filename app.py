@@ -113,6 +113,9 @@ if __name__ == "__main__":
     players = []
     jury = []
 
+    for player in players:
+        player.tribe = None
+
     for tribe in tribes:
         players.extend(tribe.players)
 
@@ -121,10 +124,10 @@ if __name__ == "__main__":
 
         # Simulate conversations at camp
         convo_starter = choice(players)
-        # convo_starter.talk_to(
-        #     choice([player for player in players if player != convo_starter]),
-        #     "who you think a big threat is.",
-        # )
+        convo_starter.talk_to(
+            choice([player for player in players if player != convo_starter]),
+            "who is a big target?",
+        )
 
         # Tribal council
         players, new_jury_member = TribalCouncil(losers).simulate(jury=jury)

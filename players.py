@@ -152,6 +152,9 @@ class Player:
     # Descriptor
     descriptor: str = ""
 
+    # def __hash__(self):
+    #     return hash((self.get_full_name(), self.age, self.home_state))
+
     def __post_init__(self):
         self.gender = choice(["male", "female"])
         self.first_name = names.get_first_name(gender=self.gender)

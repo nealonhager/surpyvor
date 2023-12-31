@@ -212,6 +212,7 @@ class Player:
         threat_level += target_player.creativity
         threat_level += target_player.fortitude
         threat_level -= target_player.hunger
+        threat_level += target_player.balance
         threat_level += target_player.speed
         threat_level += target_player.reward_challenges_won
         threat_level += target_player.immunity_challenges_won

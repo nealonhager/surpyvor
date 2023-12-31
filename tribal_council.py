@@ -3,6 +3,7 @@ from players import Player, host
 import random
 from script_write import ScriptWriter as sw
 from collections import Counter
+import utils
 
 
 class TribalCouncil:
@@ -59,18 +60,46 @@ class TribalCouncil:
         for k, v in dict(Counter(tally)).items():
             if v == highest_vote_count:
                 number_of_players_with_highest_votes += 1
+
         if not voted_out_player:
             if number_of_players_with_highest_votes > 1:
                 sw.add_dialog(
                     host.get_full_name(),
-                    "Looks like we have a tie, here's what's going to happen.",
+                    "Looks like we have a tie. We will have a revote.",
                 )
-                # TODO
-                voted_out_player = random.choice(votes)
-            else:
-                for k, v in dict(Counter(tally)).items():
+                # Tiebreaker: Revote among tied players
+                tied_players = [
+                    k
+                    for k, v in dict(Counter(tally)).items()
+                    if v == highest_vote_count
+                ]
+                tied_players = [
+                    player
+                    for player in self.players
+                    if player.get_full_name() in tied_players
+                ]
+                revote_tally = []
+                for player in self.players:
+                    if player not in tied_players:
+                        revoted_player = player.vote(tied_players)
+                        revote_tally.append(revoted_player)
+
+                # Check if the revote breaks the tie
+                revote_counts = dict(Counter([p.get_full_name() for p in revote_tally]))
+
+                number_of_players_with_highest_votes = 0
+                for k, v in revote_counts.items():
                     if v == highest_vote_count:
-                        voted_out_player = k
+                        number_of_players_with_highest_votes += 1
+                if number_of_players_with_highest_votes == 1:
+                    voted_out_player = max(revote_counts, key=revote_counts.get)
+                else:
+                    # Go to rocks
+                    sw.add_dialog(
+                        host.get_full_name(),
+                        "Since we still have a tie, we will have to go to rocks.",
+                    )
+                    voted_out_player = random.choice(tied_players)
 
         for player in self.players:
             if player.get_full_name() == voted_out_player:
@@ -83,7 +112,9 @@ class TribalCouncil:
                 new_players.append(player)
 
         jury_mod = (
-            "" if jury is None else f", and the #{len(jury)+1} member of our jury"
+            ""
+            if jury is None
+            else f", and the {utils.ordinal(len(jury)+1)} member of our jury"
         )
         sw.add_dialog(
             host.get_full_name(),
